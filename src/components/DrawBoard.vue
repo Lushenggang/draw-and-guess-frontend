@@ -5,6 +5,9 @@
         @mousemove.stop="mouseMove"
         @mouseout.stop="mouseOut"
         @mouseup.stop="mouseUp"
+        @touchstart.stop="touchMove"
+        @touchmove.stop="touchMove"
+        @touchend.stop="touchEnd"
         ref="canvas">
       </canvas>
     </div>
@@ -20,8 +23,8 @@
 </template>
 
 <script>
-const BOARD_WIDTH = 300
-const BOARD_HEIGHT = 300
+const BOARD_WIDTH = 600
+const BOARD_HEIGHT = 600
 
 export default {
   data () {
@@ -36,6 +39,7 @@ export default {
   mounted () {
     this.ctx = this.$refs.canvas.getContext('2d')
     this.ctx.beginPath()
+    this.ctx.lineWidth = 10
     this.$refs.canvas.width = BOARD_WIDTH
     this.$refs.canvas.height = BOARD_HEIGHT
   },
@@ -54,6 +58,10 @@ export default {
     },
     addPath (x, y) {
       if (!this.ctx) return
+      if (!this.lastTime) {
+        this.pathList.push([])
+        this.lastTime = +new Date()
+      }
       [x, y] = this.calPoint(x, y)
       let list = this.pathList[this.pathList.length - 1]
       let delta = 0
@@ -68,16 +76,27 @@ export default {
       list.push([x, y, delta])
     },
     mouseMove (event) {
-      if (!this.lastTime) {
-        this.pathList.push([])
-        this.lastTime = +new Date()
-      }
+      let leftDown = event.buttons & 1
+      if (!leftDown) return
       this.addPath(event.clientX, event.clientY)
     },
     mouseOut () {
       this.lastTime = 0
     },
     mouseUp () {
+      this.lastTime = 0
+    },
+    touchMove (event) {
+      console.log(event)
+      let touches = event.touches
+      if (touches.length != 1) {
+        this.touchEnd()
+        return
+      }
+      this.addPath(touches[0].pageX, touches[0].pageY)
+      event.preventDefault()
+    },
+    touchEnd () {
       this.lastTime = 0
     }
   },
@@ -88,13 +107,12 @@ export default {
 <style lang="stylus" scoped>
 .draw-board
   .board-container
-    width 300px
-    height 300px
-    max-width 90vmin
-    max-height 90vmin
+    width 600px
+    height 600px
     margin 0 auto
     canvas
       width 100%
       height 100%
       border 1px solid red
+
 </style>

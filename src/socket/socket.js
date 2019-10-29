@@ -1,15 +1,20 @@
 import * as protocol from './protocol'
+import * as tool from '@/tool'
+
 let WS = 'ws://127.0.0.1:4999'
 
 export class CWebSocket {
   constructor () {
     this.listenerList = {}
     this.socket = new WebSocket(WS)
-    this.socket.onopen = (...args) => {
-      this.C2SMessage(this.C2S_LOGIN)
+    this.socket.onopen = () => {
+      let data = tool.getToken()
+      this.C2SMessage(this.C2S_LOGIN, data)
     }
     this.socket.onmessage = (...args) => {
+      console.log(args)
       this.S2CMessage(...args)
+      
     }
     this.socket.onerror = (...args) => {
       this.onerror(args)

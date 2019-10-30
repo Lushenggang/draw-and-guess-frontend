@@ -22,7 +22,9 @@ export class CWebSocket {
     for (let key in protocol) {
       this[key] = protocol[key]
     }
+    this.initListener()
   }
+  
   addListener (protocol, func) {
     if (!this.listenerList[protocol]) {
       this.listenerList[protocol] = []
@@ -69,5 +71,16 @@ export class CWebSocket {
       this.socket.close()
       this.socket = null
     }
+  }
+  initListener () {
+    let data = {
+      [this.S2CLOGIN]: this.login.bind(this)
+    }
+    for (let key in data) {
+      this.addListener(key, data[key])
+    }
+  }
+  login (data) {
+    console.log(data)
   }
 }

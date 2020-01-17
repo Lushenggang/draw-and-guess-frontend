@@ -12,12 +12,15 @@
       </canvas>
     </div>
     <div class="draw-menu">
-      <!-- <div class="color-list">
-        颜色表
+      <div class="color">
+        <div class="label">颜色表</div>
+        <div class="color-list">
+
+        </div>
       </div>
       <div class="eraser">
-        橡皮
-      </div> -->
+        <div class="label">菜单</div>
+      </div>
     </div>
   </div>
 </template>
@@ -29,6 +32,10 @@ const BOARD_HEIGHT = 600
 export default {
   data () {
     return {
+      colorList: [
+        '#3361d8',
+        ''
+      ],
       ctx: null,
       pathList: [],
       lastTime: 0,
@@ -106,13 +113,21 @@ export default {
 
 <style lang="stylus" scoped>
 .draw-board
+  padding 20px 0
+  display flex
+  flex-direction column
   .board-container
     width 600px
     height 600px
+    max-width 90vmin
+    max-height 90vmin
     margin 0 auto
     canvas
       width 100%
       height 100%
-      border 1px solid red
+      border 1px solid #ccc
 
+  .draw-menu
+    padding 20px 5vmin
+    text-align left
 </style>
